@@ -2,18 +2,35 @@
 
 Custom Clawdbot skills for personal use and sharing.
 
-## Available Skills
+## 📋 Menu
 
-### 📦 star-gazer
+| Skill | Description |
+|-------|-------------|
+| [📦 star-gazer](#-star-gazer) | Track GitHub repositories with most star gains |
+| [📐 cad-gen](#-cad-gen) | Generate CAD 3D models using FreeCAD |
+| [🎙️ voice-mode](#-voice-mode) | Switch between text and voice replies |
+| [🔊 feishu-voice](#-feishu-voice) | Send voice replies to Feishu |
+
+---
+
+## 📦 star-gazer
+
 Track GitHub repositories with the most star gains.
 
-**Prerequisites:**
+<details>
+<summary><b>Prerequisites</b></summary>
+
 - GitHub Personal Access Token with `repo` scope
 
-**Usage:**
 ```bash
 export GITHUB_TOKEN="your_github_token"
+```
+</details>
 
+<details>
+<summary><b>Usage</b></summary>
+
+```bash
 # Run the tracker
 clawdbot exec --command "bash /path/to/star-gazer.sh"
 
@@ -24,13 +41,17 @@ clawdbot exec --command "bash /path/to/star-gazer.sh --dry-run"
 **Output:**
 - Top 5 repos with most stars gained today
 - Data saved to `~/.clawdbot/star-tracker.json`
+</details>
 
 ---
 
-### 📐 cad-gen
+## 📐 cad-gen
+
 Generate CAD 3D models using FreeCAD Python API.
 
-**Prerequisites:**
+<details>
+<summary><b>Prerequisites</b></summary>
+
 ```bash
 # Install FreeCAD
 brew install freecad
@@ -38,8 +59,11 @@ brew install freecad
 # Verify installation
 freecadcmd --version
 ```
+</details>
 
-**Usage:**
+<details>
+<summary><b>Basic Usage</b></summary>
+
 ```bash
 # Generate a box (mm)
 clawdbot exec --command "bash /path/to/cad-gen.sh --shape box --width 50 --height 30 --depth 20"
@@ -47,23 +71,14 @@ clawdbot exec --command "bash /path/to/cad-gen.sh --shape box --width 50 --heigh
 # Generate a cylinder
 clawdbot exec --command "bash /path/to/cad-gen.sh --shape cylinder --diameter 25 --height 40"
 
-# Generate with filleted edges
-clawdbot exec --command "bash /path/to/cad-gen.sh --shape box --width 50 --height 30 --depth 20 --fillet-radius 5"
-
 # Export to all formats
 clawdbot exec --command "bash /path/to/cad-gen.sh --shape box --width 50 --all-formats"
-
-# Generate sphere
-clawdbot exec --command "bash /path/to/cad-gen.sh --shape sphere --diameter 30 --segments 64"
-
-# Generate cone/frustum
-clawdbot exec --command "bash /path/to/cad-gen.sh --shape cone --diameter-base 30 --diameter-top 10 --height 40"
-
-# Generate torus
-clawdbot exec --command "bash /path/to/cad-gen.sh --shape torus --diameter-major 50 --diameter-minor 10"
 ```
+</details>
 
-**Parameters:**
+<details>
+<summary><b>Parameters</b></summary>
+
 | Shape | Required Parameters |
 |-------|---------------------|
 | box | `--width`, `--height`, `--depth` |
@@ -72,7 +87,6 @@ clawdbot exec --command "bash /path/to/cad-gen.sh --shape torus --diameter-major
 | cone | `--diameter-base`, `--diameter-top`, `--height` |
 | torus | `--diameter-major`, `--diameter-minor` |
 
-**Optional Parameters:**
 | Parameter | Description |
 |-----------|-------------|
 | `--segments` | Number of segments (default: 50) |
@@ -80,24 +94,91 @@ clawdbot exec --command "bash /path/to/cad-gen.sh --shape torus --diameter-major
 | `--chamfer-size` | Chamfer size for box (mm) |
 | `--output-format` | stl, step, or dxf (default: stl) |
 | `--all-formats` | Export in all formats |
-| `--render` | Generate render image |
+</details>
 
-**Output Directory:** `~/clawd/cad-output/`
+<details>
+<summary><b>Output</b></summary>
 
-**Output Files:**
+**Directory:** `~/clawd/cad-output/`
+
 | Format | Extension | Use Case |
 |--------|-----------|----------|
 | STL | `.stl` | 3D printing |
 | STEP | `.step` | CAD software exchange |
 | DXF | `.dxf` | 2D drawings |
 | FreeCAD | `.fcstd1` | Editable source |
+</details>
 
 ---
 
-### 📦 feishu-voice
-Send voice replies to Feishu using ElevenLabs TTS. Optimized for Feishu audio message format.
+## 🎙️ voice-mode
 
-**Prerequisites:**
+Switch between text and voice replies. Use female voice for responses.
+
+<details>
+<summary><b>Prerequisites</b></summary>
+
+```bash
+# Install sag (ElevenLabs TTS)
+brew install steipete/tap/sag
+
+# Set API key
+export ELEVENLABS_API_KEY="your_api_key"
+```
+</details>
+
+<details>
+<summary><b>Popular Female Voices</b></summary>
+
+- Sarah - Warm, friendly (recommended)
+- Jessica - Professional
+- Emily - Casual, young
+- Bella - Soft, gentle
+
+```bash
+# Set default voice
+export SAG_VOICE_ID="Sarah"
+```
+</details>
+
+<details>
+<summary><b>Usage</b></summary>
+
+```bash
+# Generate voice reply
+clawdbot exec --command "bash /path/to/voice-mode.sh 'Hello!'"
+
+# With specific voice
+clawdbot exec --command "bash /path/to/voice-mode.sh 'Hello!' --voice Sarah"
+
+# With style
+clawdbot exec --command "bash /path/to/voice-mode.sh 'Secret' --style whispers"
+```
+
+**Voice Styles:**
+- `[whispers]` - Soft, quiet
+- `[excited]` - Enthusiastic
+- `[curious]` - Inquisitive
+- `[laughs]` - With laughter
+- `[sighs]` - Sighing
+</details>
+
+<details>
+<summary><b>Output</b></summary>
+
+- Audio saved to `/tmp/voice_*.mp3`
+- Include in reply: `MEDIA:/tmp/voice-XXX.mp3`
+</details>
+
+---
+
+## 🔊 feishu-voice
+
+Send voice replies to Feishu. Optimized for Feishu audio message format.
+
+<details>
+<summary><b>Prerequisites</b></summary>
+
 ```bash
 # Install sag (ElevenLabs TTS)
 brew install steipete/tap/sag
@@ -105,11 +186,14 @@ brew install steipete/tap/sag
 # Set API key
 export ELEVENLABS_API_KEY="your_api_key"
 
-# Set default voice (optional)
-export SAG_VOICE_ID="Sarah"  # Female voice
+# Set default voice (recommended)
+export SAG_VOICE_ID="Sarah"
 ```
+</details>
 
-**Usage:**
+<details>
+<summary><b>Usage</b></summary>
+
 ```bash
 # Generate voice for Feishu
 clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello from voice'"
@@ -120,25 +204,33 @@ clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello' --voice Sarah"
 # Quick speak
 clawdbot exec --command "bash /path/to/feishu-speak.sh 'Quick message'"
 ```
+</details>
 
-**Feishu-Specific Styles:**
+<details>
+<summary><b>Feishu-Specific Styles</b></summary>
+
 - `[whispers]` - Intimate, personal
 - `[curious]` - Engaging question
-- `[excited]` - Enthusiastic
+- `[excited]` - Enthusiastic greeting
+</details>
 
-**Output:**
-- MP3 file under 60 seconds (Feishu compatible)
-- Saved to `/tmp/feishu-voice-*.mp3`
-- Include in Feishu reply: `MEDIA:/tmp/feishu-voice-XXX.mp3`
+<details>
+<summary><b>Output</b></summary>
+
+- **Format:** MP3 (Feishu compatible)
+- **Max Duration:** 60 seconds recommended
+- **Location:** `/tmp/feishu-voice-*.mp3`
+- **Include in Feishu:** `MEDIA:/tmp/feishu-voice-XXX.mp3`
+</details>
 
 ---
 
-## Adding New Skills
+## ➕ Adding New Skills
 
 1. Create a folder: `<skill-name>/`
 2. Add `SKILL.md` with documentation
 3. Add executable scripts
-4. Submit a PR or push directly
+4. Push to this repository
 
 **Skill Structure:**
 ```
@@ -149,6 +241,8 @@ clawdbot exec --command "bash /path/to/feishu-speak.sh 'Quick message'"
     └── *.py
 ```
 
-## License
+---
+
+## 📝 License
 
 MIT
