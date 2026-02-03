@@ -94,6 +94,45 @@ clawdbot exec --command "bash /path/to/cad-gen.sh --shape torus --diameter-major
 
 ---
 
+### 📦 feishu-voice
+Send voice replies to Feishu using ElevenLabs TTS. Optimized for Feishu audio message format.
+
+**Prerequisites:**
+```bash
+# Install sag (ElevenLabs TTS)
+brew install steipete/tap/sag
+
+# Set API key
+export ELEVENLABS_API_KEY="your_api_key"
+
+# Set default voice (optional)
+export SAG_VOICE_ID="Sarah"  # Female voice
+```
+
+**Usage:**
+```bash
+# Generate voice for Feishu
+clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello from voice'"
+
+# With specific voice
+clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello' --voice Sarah"
+
+# Quick speak
+clawdbot exec --command "bash /path/to/feishu-speak.sh 'Quick message'"
+```
+
+**Feishu-Specific Styles:**
+- `[whispers]` - Intimate, personal
+- `[curious]` - Engaging question
+- `[excited]` - Enthusiastic
+
+**Output:**
+- MP3 file under 60 seconds (Feishu compatible)
+- Saved to `/tmp/feishu-voice-*.mp3`
+- Include in Feishu reply: `MEDIA:/tmp/feishu-voice-XXX.mp3`
+
+---
+
 ## Adding New Skills
 
 1. Create a folder: `<skill-name>/`
