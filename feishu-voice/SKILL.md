@@ -1,113 +1,109 @@
 ---
 name: feishu-voice
-description: "Generate and send voice replies to Feishu. Converts text to speech using ElevenLabs and sends as Feishu audio messages."
+description: "Send voice replies to Feishu using macOS built-in say command. Free and works out of the box!"
 metadata:
   {
     "openclaw":
       {
         "emoji": "🔊",
-        "requires": { "bins": ["sag"], "env": ["ELEVENLABS_API_KEY"] },
-        "install":
-          [
-            {
-              "id": "brew",
-              "kind": "brew",
-              "formula": "steipete/tap/sag",
-              "bins": ["sag"],
-              "label": "Install sag (TTS)",
-            },
-          ],
+        "requires": { "bins": ["say"] },
+        "install": [],
       },
   }
 ---
 
 # Feishu Voice Skill
 
-Send voice replies to Feishu using ElevenLabs TTS.
+Send voice replies to Feishu using macOS built-in `say` command.
 
-## Setup
+## Why macOS say?
 
-**Required environment variable:**
+✅ **100% Free** - No API keys needed
+✅ **Works instantly** - Built into macOS
+✅ **Feishu compatible** - MP3 format supported
+✅ **Multiple voices** - Choose different speakers
+
+## Available Voices
+
+List all available voices:
 ```bash
-export ELEVENLABS_API_KEY="your_api_key"
-```
-
-**Recommended female voices for Feishu:**
-```bash
-# Set default voice
-export SAG_VOICE_ID="Sarah"    # Friendly female voice
-# Or use voice ID directly
-export ELEVENLABS_VOICE_ID="voice_id"
+say -v "?" | head -20
 ```
 
 **Popular female voices:**
-- Sarah - Warm, friendly
-- Jessica - Professional
-- Emily - Casual, young
-- Bella - Soft, gentle
+- Victoria - Professional
+- Samantha - Friendly
+- Karen - Australian
+- Grace - Singaporean
+- Tessa - South African
 
 ## Usage
 
 ### For Feishu
 
-When you want a voice reply in Feishu, say:
+When you want a voice reply, say:
 - "Reply with voice in Feishu"
 - "Send voice to Feishu"
 - "🔊 in Feishu"
 
-The skill will:
-1. Generate audio using ElevenLabs
-2. Save to a format Feishu can send
-3. Prepare for attachment in Feishu message
-
 ### Manual Voice Generation
 
 ```bash
-# Generate with default female voice
+# Generate with default voice
 clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello from voice'"
 
-# With specific voice
-clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello' --voice Sarah"
+# With specific female voice
+clawdbot exec --command "bash /path/to/feishu-voice.sh 'Hello' --voice Samantha"
 
-# With style
-clawdbot exec --command "bash /path/to/feishu-voice.sh 'Secret' --style whispers"
+# With slow, clear speech
+clawdbot exec --command "bash /path/to/feishu-voice.sh 'Clear message' --voice Victoria --rate 150"
 ```
 
-### Feishu-Specific Styles
-
-For Feishu audio messages, these styles work well:
-- `[whispers]` - Intimate, personal
-- `[curious]` - Engaging
-- `[excited]` - Enthusiastic greeting
-- Standard (no tags) - Professional
-
-## Feishu Audio Format
-
-Feishu supports:
-- **Audio messages**: MP3 format, under 2MB recommended
-- **Duration**: Keep under 60 seconds for best compatibility
+### Quick Voice
 
 ```bash
-# Check audio duration
-afinfo /tmp/feishu-voice.mp3 | grep Duration
-
-# Or
-ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 /tmp/feishu-voice.mp3
+# Quick reply
+clawdbot exec --command "bash /path/to/feishu-speak.sh 'Quick message'"
 ```
 
-## Configuration
+## Voice Options
 
-Set default voice in `~/.clawdbot/clawdbot.json`:
-```json
-{
-  "feishu": {
-    "voice": {
-      "enabled": true,
-      "defaultVoice": "Sarah",
-      "maxDuration": 60
-    }
-  }
-}
+| Option | Description |
+|--------|-------------|
+| `--voice NAME` | Voice to use (default: Samantha) |
+| `--rate N` | Speaking rate (words per minute, default: 180) |
+| `--output FILE` | Output file path |
+
+### Voice Examples
+
+```bash
+# Professional
+say -v Victoria "Professional message" -o professional.mp3
+
+# Friendly
+say -v Samantha "Friendly greeting" -o friendly.mp3
+
+# Slow and clear
+say -v Karen -r 150 "Slow and clear" -o slow.mp3
+
+# All available voices
+say -v "?"  # Lists all voices
+```
+
+## Feishu Compatibility
+
+**Supported formats:**
+- AIFF (native)
+- MP3 (via afconvert)
+
+**Recommended:**
+- Keep under 60 seconds
+- Use clear speech rate (150-180 wpm)
+- AIFF format for best quality
+
+```bash
+# Convert AIFF to MP3 (if needed)
+afconvert -f MP3 -d MP3 input.aiff output.mp3
 ```
 
 ## Examples
@@ -115,17 +111,17 @@ Set default voice in `~/.clawdbot/clawdbot.json`:
 ### Voice Styles for Feishu
 
 ```bash
-# Warm greeting (recommended for Feishu)
-sag -v Sarah -o /tmp/voice.mp3 "Hey! Got your message."
+# Warm greeting
+say -v Samantha -r 170 "Hey! Got your message." -o greeting.aiff
 
 # Curious question
-sag -v Emily -o /tmp/voice.mp3 "[curious] What do you think about this?"
+say -v Victoria -r 160 "What do you think about this?" -o question.aiff
 
 # Friendly update
-sag -v Jessica -o /tmp/voice.mp3 "Just wanted to check in with you!"
+say -v Samantha -r 180 "Just checking in with you!" -o update.aiff
 
-# Whispered secret
-sag -v Bella -o /tmp/voice.mp3 "[whispers] I have something to tell you"
+# Whispered (use lower rate and softer voice)
+say -v "Grace" -r 140 "[whispers] I have something to tell you" -o whisper.aiff
 ```
 
 ### Sending to Feishu
@@ -137,12 +133,35 @@ After generating audio, include in your Feishu reply:
 clawdbot exec --command "bash /path/to/feishu-voice.sh 'Your message'"
 
 # Include in response
-# MEDIA:/tmp/feishu-voice-XXX.mp3
+# MEDIA:/tmp/feishu-voice-XXX.aiff
 ```
+
+## Advanced
+
+### Rate Reference
+
+| Rate | Description |
+|------|-------------|
+| 100 | Very slow |
+| 150 | Clear, slow |
+| 180 | Normal |
+| 220 | Fast |
+| 260 | Very fast |
+
+### Voice Characteristics
+
+| Voice | Gender | Style |
+|-------|--------|-------|
+| Samantha | Female | Friendly, American |
+| Victoria | Female | Professional, American |
+| Karen | Female | Clear, Australian |
+| Grace | Female | Soft, Singaporean |
+| Tessa | Female | South African |
+| Daniel | Male | British |
 
 ## Notes
 
-- Keep audio under 60 seconds for Feishu
-- MP3 format works best
-- File saved to `/tmp/feishu-voice-*.mp3`
-- Delete old files periodically to save space
+- Audio saved to `/tmp/feishu-voice-*.aiff`
+- AIFF format works with Feishu
+- No API keys or accounts needed
+- 100% free, unlimited usage
