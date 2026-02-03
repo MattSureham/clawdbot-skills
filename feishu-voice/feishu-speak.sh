@@ -1,12 +1,13 @@
 #!/bin/bash
-# Quick Feishu voice reply - generates female voice for Feishu
+# Quick Feishu voice reply - uses macOS say (free!)
 # Usage: echo "Hello" | ./feishu-speak.sh
 #   Or: ./feishu-speak.sh "Hello world"
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VOICE="${SAG_VOICE_ID:-Sarah}"
+VOICE="${FEISHU_VOICE:-Samantha}"
+RATE="${FEISHU_VOICE_RATE:-180}"
 
 # Get message from stdin or argument
 if [ -p /dev/stdin ]; then
@@ -19,12 +20,10 @@ else
     exit 1
 fi
 
-# Generate audio for Feishu
-OUTPUT="/tmp/feishu-voice-$(date +%s).mp3"
+# Generate audio
+OUTPUT="/tmp/feishu-voice-$(date +%s).aiff"
 
-sag -v "$VOICE" -o "$OUTPUT" "$MESSAGE"
+say -v "$VOICE" -r "$RATE" -o "$OUTPUT" "$MESSAGE"
 
 echo "🔊 $OUTPUT"
 echo "MEDIA:$OUTPUT"
-echo ""
-echo "File: $OUTPUT"
