@@ -1,0 +1,26 @@
+tools:
+  tavily_search:
+    name: "Tavily Search"
+    description: "Search the web using Tavily AI-powered search engine"
+    command: "python3"
+    args:
+      - "{{skill_dir}}/search.py"
+      - "{{query}}"
+    env:
+      TAVILY_API_KEY: "{{config.api_key}}"
+    schema:
+      type: object
+      properties:
+        query:
+          type: string
+          description: "Search query"
+        max_results:
+          type: integer
+          default: 5
+          description: "Maximum number of results (1-10)"
+        search_depth:
+          type: string
+          enum: ["basic", "advanced"]
+          default: "basic"
+          description: "Search depth level"
+      required: ["query"]
